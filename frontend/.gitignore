@@ -20,22 +20,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-#Backend
-# Logs
-logs
-*.log
-npm-debug.log*
-
-# Dependency directory
-node_modules
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.DS_Store
-.idea
-.vscode
-
-.env
