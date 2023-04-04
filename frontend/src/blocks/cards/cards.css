@@ -1,0 +1,11 @@
+.cards {
+   box-sizing: border-box;
+   padding: 33px 0 48px;
+   margin: 0 auto;
+}
+
+@media screen and (min-width: 1280px) {
+   .cards {
+      padding: 51px 0 67px;
+   }
+}

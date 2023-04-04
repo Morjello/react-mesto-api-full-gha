@@ -1,0 +1,8 @@
+.cards__cell {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   min-height: 77px;
+   max-width: 282px;
+   padding: 0 20px 0;
+}
