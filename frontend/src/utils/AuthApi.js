@@ -50,5 +50,5 @@ class AuthApi {
 }
 
 export const authApi = new AuthApi({
-  baseUrl: "https://auth.nomoreparties.co",
+  baseUrl: "http://morjello.mesto.nomoredomains.monster",
 });
