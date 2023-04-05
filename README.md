@@ -10,7 +10,7 @@
 
 ## Ссылки на проект
 
-IP-адрес 158.160.41.130
+IP-адрес <158.160.41.130>
 
 Frontend https://morjello.mesto.nomoredomains.monster
 
