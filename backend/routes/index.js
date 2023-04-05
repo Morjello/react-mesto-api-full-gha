@@ -6,6 +6,7 @@ const cardsRoutes = require("./card");
 const { createUser, login } = require("../controllers/user");
 const NotFoundError = require("../errors/not-found-err");
 const { HTTPSAVE } = require("../utils/constants");
+const { errorLogger } = require("../middlewares/logger");
 const errorHandler = require("../middlewares/errors-handler");
 
 // логин
@@ -40,6 +41,7 @@ router.post(
 router.use("/users", auth, userRoutes);
 router.use("/cards", auth, cardsRoutes);
 
+router.use(errorLogger);
 router.use(errors());
 
 router.use((req, res, next) => {
