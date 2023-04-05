@@ -9,7 +9,7 @@ const { PORT, DB_ADRESS } = require("./config");
 const allowedCors = [
   "https://morjello.mesto.nomoredomains.monster",
   "http://morjello.mesto.nomoredomains.monster",
-  "http://localhost:3001",
+  "http://localhost:3000",
 ];
 
 const app = express();
