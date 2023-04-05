@@ -78,7 +78,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: "http://api.morjello.mesto.nomoredomains.monster",
+  baseUrl: "https://api.morjello.mesto.nomoredomains.monster",
   headers: {
     "Content-Type": "application/json",
     authorization: `Bearer ${localStorage.getItem("jwt")}`,
