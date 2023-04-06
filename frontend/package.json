@@ -1,6 +1,6 @@
 {
   "name": "react-mesto-api-full",
-  "homepage": "https://morjello.mesto.nomoredomains.monster",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
