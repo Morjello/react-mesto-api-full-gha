@@ -258,7 +258,7 @@ function App() {
     localStorage.removeItem("jwt");
     navigate("/sign-in");
   }
-  console.log(selectedCard)
+  
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <CardContext.Provider value={cards}>
