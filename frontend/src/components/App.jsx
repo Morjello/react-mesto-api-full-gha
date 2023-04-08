@@ -69,20 +69,116 @@ function App() {
     setSelectedCard(null);
   }
 
+  // авторизация пользователя
+  function handleLoginUser({ password, email }) {
+    console.log(loggedIn)
+    authApi
+      .login(password, email)
+      .then((data) => {
+        if (data.token) {
+          tokenCheck()
+          handleLogin();
+          setUserEmail(email);
+          setInfoTooltipText("Вы успешно авторизовались!");
+          setInfoTooltipImage(union);
+          openInfoTooltipPopup();
+          navigate("/", { replace: true });
+        }
+      })
+      .catch((err) => {
+        setInfoTooltipText("Что-то пошло не так! Попробуйте ещё раз.");
+        setInfoTooltipImage(unionFail);
+        openInfoTooltipPopup();
+        console.log("Ошибка входа", err);
+      });
+  }
+
+  
+  // получение данных пользователя
+  useEffect(() => {
+    if (loggedIn) {
+      Promise.all([api.getProfileInfo(), api.getInitialCards()])
+        .then(([userData, cardsData]) => {
+          setCurrentUser(userData);
+          setCards(cardsData);
+        })
+        .catch((err) => {
+          console.log("Ошибка загрузки данных пользователя", err);
+        });
+    }
+  }, [loggedIn]);
+
+  // function getUserData() {
+  //   Promise.all([api.getProfileInfo(), api.getInitialCards()])
+  //     .then(([userData, cardsData]) => {
+  //       setCurrentUser(userData);
+  //       setCards(cardsData);
+  //     })
+  //     .catch((err) => {
+  //       console.log("Ошибка загрузки данных пользователя", err);
+  //     });
+  // }
+
+  // проверка токена
+  function tokenCheck() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      authApi
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setUserEmail(res.email);
+            navigate("/", { replace: true });
+          }
+        })
+        .catch((err) => {
+          console.log("Ошибка валидности токена", err);
+        });
+    }
+  }
+
+  useEffect(() => {
+    tokenCheck()
+  }, []);
+
+  function handleLogin() {
+    setLoggedIn(true);
+  }
+
+  // регистрация пользователя
+  function handleRegisterUser({ password, email }) {
+    authApi
+      .register(password, email)
+      .then(() => {
+        setInfoTooltipText("Вы успешно зарегистрировались!");
+        setInfoTooltipImage(union);
+        openInfoTooltipPopup();
+        navigate("/sign-in", { replace: true });
+      })
+      .catch((err) => {
+        setInfoTooltipText("Что-то пошло не так! Попробуйте ещё раз.");
+        setInfoTooltipImage(unionFail);
+        openInfoTooltipPopup();
+        console.log("Регистрация не удалась", err);
+      });
+  }
+
   // передача данных карточки
   function handleCardClick(card) {
-    setSelectedCard(...card);
+    console.log(card)
+    setSelectedCard(card);
   }
 
   // поставить убрать лайк
-  function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     if (!isLiked) {
       api
         .putLike(card._id)
-        .then((newCard) => {
+        .then((newLike) => {
           setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+            state.map((c) => (c._id === newLike._id ? newLike : c))
           );
         })
         .catch((err) => {
@@ -91,23 +187,23 @@ function App() {
     } else {
       api
         .deleteLike(card._id)
-        .then((newCard) => {
+        .then((newLike) => {
           setCards((state) =>
-            state.map((c) => (c._id === card._id ? newCard : c))
+            state.map((c) => (c._id === newLike._id ? newLike : c))
           );
         })
         .catch((err) => {
           console.log("Ошибка удаления лайка", err);
         });
     }
-  }
+  };
 
   // обновление данных пользователя
   function handleUpdateUser({ name, about }) {
     api
       .editProfileInfo({ name, about })
       .then((userData) => {
-        setCurrentUser(userData);
+        setCurrentUser(Object.assign({}, currentUser, userData));
         closeAllPopups();
       })
       .catch((err) => {
@@ -120,7 +216,7 @@ function App() {
     api
       .editUserAvatar(avatar)
       .then((avatar) => {
-        setCurrentUser(avatar);
+        setCurrentUser(Object.assign({}, currentUser, avatar));
         closeAllPopups();
       })
       .catch((err) => {
@@ -158,87 +254,11 @@ function App() {
       });
   }
 
-  // получение данных пользователя
-  useEffect(() => {
-    if (loggedIn) {
-      getUserData();
-    }
-  }, [loggedIn]);
-
-  function getUserData() {
-    Promise.all([api.getProfileInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-      })
-      .catch((err) => {
-        console.log("Ошибка загрузки данных пользователя", err);
-      });
+  function signOut() {
+    localStorage.removeItem("jwt");
+    navigate("/sign-in");
   }
-
-  // регистрация пользователя
-  function handleRegisterUser({ password, email }) {
-    authApi
-      .register(password, email)
-      .then(() => {
-        setInfoTooltipText("Вы успешно зарегистрировались!");
-        setInfoTooltipImage(union);
-        openInfoTooltipPopup();
-        navigate("/sign-in", { replace: true });
-      })
-      .catch((err) => {
-        setInfoTooltipText("Что-то пошло не так! Попробуйте ещё раз.");
-        setInfoTooltipImage(unionFail);
-        openInfoTooltipPopup();
-        console.log("Регистрация не удалась", err);
-      });
-  }
-
-  // авторизация пользователя
-  function handleLoginUser({ password, email }) {
-    authApi
-      .login(password, email)
-      .then((data) => {
-        if (data.token) {
-          setLoggedIn(true);
-          setUserEmail(email);
-          setInfoTooltipText("Вы успешно авторизовались!");
-          setInfoTooltipImage(union);
-          openInfoTooltipPopup();
-          navigate("/", { replace: true });
-        }
-      })
-      .catch((err) => {
-        setInfoTooltipText("Что-то пошло не так! Попробуйте ещё раз.");
-        setInfoTooltipImage(unionFail);
-        openInfoTooltipPopup();
-        console.log("Ошибка входа", err);
-      });
-  }
-
-  // проверка токена
-  useEffect(() => {
-    tokenCheck();
-  }, []);
-
-  function tokenCheck() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      authApi
-        .checkToken(jwt)
-        .then((res) => {
-          if (res) {
-            setLoggedIn(true);
-            setUserEmail(res.email);
-            navigate("/", { replace: true });
-          }
-        })
-        .catch((err) => {
-          console.log("Ошибка валидности токена", err);
-        });
-    }
-  }
-
+  console.log(selectedCard)
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <CardContext.Provider value={cards}>
@@ -266,7 +286,7 @@ function App() {
             element={
               <ProtectedRoute loggedIn={loggedIn}>
                 <>
-                  <Header logoutText={"Выйти"} path={""} email={userEmail} />
+                  <Header logoutText={"Выйти"} path={""} email={userEmail} onSignOut={signOut}/>
                   <Main
                     onEditAvatar={handleEditAvatarClick}
                     onEditProfile={handleEditProfileClick}

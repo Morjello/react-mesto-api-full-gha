@@ -1,12 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Header({ email, logText, logoutText, path }) {
-  const navigate = useNavigate();
-  function signOut() {
-    localStorage.removeItem("jwt");
-    navigate("/sign-in");
-  }
+function Header({ email, logText, logoutText, path, onSignOut }) {
 
   return (
     <header className="header">
@@ -16,7 +11,7 @@ function Header({ email, logText, logoutText, path }) {
           {logText}
         </Link>
         <p className="header__button">{email}</p>
-        <p onClick={signOut} className="header__button">
+        <p onClick={onSignOut} className="header__button">
           {logoutText}
         </p>
       </div>

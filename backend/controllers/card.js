@@ -6,7 +6,6 @@ const { OK } = require("../utils/constants");
 
 const getCards = (req, res, next) => {
   Card.find({})
-    .populate(["owner", "likes"])
     .then((cards) => res.status(OK).send(cards))
     .catch((err) => {
       next(err);

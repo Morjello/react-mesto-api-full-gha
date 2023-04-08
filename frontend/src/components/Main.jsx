@@ -47,19 +47,21 @@ function Main({
       </section>
       <section className="cards">
         <ul className="cards__table">
-          {cards.map((card) => {
-            return (
-              <Card
-                key={card._id}
-                setCard={setCard}
-                card={card}
-                onCardClick={cardClick}
-                onCardLike={cardLike}
-                currentUser={currentUser}
-                onDeletePlace={onDeletePlace}
-              />
-            );
-          })}
+          {cards
+            .map((card) => {
+              return (
+                <Card
+                  key={card._id}
+                  setCard={setCard}
+                  card={card}
+                  onCardClick={cardClick}
+                  onCardLike={cardLike}
+                  currentUser={currentUser}
+                  onDeletePlace={onDeletePlace}
+                />
+              );
+            })
+            .reverse()}
         </ul>
       </section>
     </main>
