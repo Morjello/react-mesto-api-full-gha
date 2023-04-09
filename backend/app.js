@@ -1,12 +1,10 @@
-require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { requestLogger } = require("./middlewares/logger");
 
 const routes = require("./routes/index");
-
-const { PORT, DB_ADDRESS } = process.env;
+const { PORT, DB_ADDRESS } = require("./config");
 
 const allowedCors = [
   "https://morjello.mesto.nomoredomains.monster",
