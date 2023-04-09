@@ -6,7 +6,7 @@ const { requestLogger } = require("./middlewares/logger");
 
 const routes = require("./routes/index");
 
-const { PORT, DB_ADRESS } = process.env;
+const { PORT, DB_ADDRESS } = process.env;
 
 const allowedCors = [
   "https://morjello.mesto.nomoredomains.monster",
@@ -16,7 +16,7 @@ const allowedCors = [
 
 const app = express();
 
-mongoose.connect(DB_ADRESS, {
+mongoose.connect(DB_ADDRESS, {
   useNewUrlParser: true,
 });
 mongoose.set("strictQuery", false);
