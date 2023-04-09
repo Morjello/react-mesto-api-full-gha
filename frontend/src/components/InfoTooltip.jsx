@@ -1,7 +1,7 @@
-function InfoTooltip({ isOpen, onClose, infoTooltipText, infoTooltipImage }) {
+function InfoTooltip({ isOpen, onClose, infoTooltipText, infoTooltipImage, onClickOverlay }) {
   return (
     <div className="root__wrapper">
-      <div className={`popup ${isOpen && "popup_opened"}`}>
+      <div className={`popup ${isOpen && "popup_opened"}`} onClick={onClickOverlay}>
         <div className="info-tooltip__container">
           <div
             className="info-tooltip__image"

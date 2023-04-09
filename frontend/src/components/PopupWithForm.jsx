@@ -7,10 +7,13 @@ function PopupWithForm({
   onClose,
   buttonText,
   onSubmit,
-}) {
+  onClickOverlay,
+})
+
+{
   return (
     <div className="root__wrapper">
-      <div className={`popup ${isOpen && "popup_opened"}`}>
+      <div className={`popup ${isOpen && "popup_opened"}`} onClick={onClickOverlay}>
         <div className="popup__container">
           <h2 className="popup__title">{title}</h2>
           <form

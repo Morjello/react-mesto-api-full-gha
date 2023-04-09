@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function AddPlacePopup({ isOpen, onClose, onAddCard }) {
+function AddPlacePopup({ isOpen, onClose, onAddCard, onClickOverlay }) {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
 
@@ -30,6 +30,7 @@ function AddPlacePopup({ isOpen, onClose, onAddCard }) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      onClickOverlay={onClickOverlay}
     >
       <label className="popup__label">
         <input

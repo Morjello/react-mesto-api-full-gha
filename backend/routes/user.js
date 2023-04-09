@@ -10,16 +10,7 @@ const {
 } = require("../controllers/user");
 
 // получаем всех пользователей
-router.get(
-  "/",
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  getUsers
-);
+router.get("/", getUsers);
 
 // получаем данные текущего пользователя
 router.get("/me", getCurrentUser);

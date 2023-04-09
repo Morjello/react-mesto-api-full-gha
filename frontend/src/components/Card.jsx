@@ -1,6 +1,3 @@
-import CardContext from "../contexts/CardContext";
-import { useContext } from "react";
-
 function Card({
   onCardClick,
   onCardLike,
@@ -9,7 +6,6 @@ function Card({
   card,
   setCard,
 }) {
-  const cards = useContext(CardContext);
   const isOwn = card.owner === currentUser._id;
   const isLiked = card.likes.some((i) => i === currentUser._id);
   const cardLikeButtonClassName = `cards__heart ${

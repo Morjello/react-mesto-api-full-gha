@@ -28,9 +28,17 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isDeletePlacePopupOpen, setIsDeletePlacePopupOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
   const [infoTooltipText, setInfoTooltipText] = useState("");
   const [infoTooltipImage, setInfoTooltipImage] = useState("");
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const isOpen =
+    isAddPlacePopupOpen || 
+    isDeletePlacePopupOpen || 
+    isEditAvatarPopupOpen || 
+    isEditProfilePopupOpen || 
+    isInfoTooltipOpen ||
+    isImagePopupOpen;
   // стейт данных пользователя
   const [currentUser, setCurrentUser] = useState({});
   // стейт карточек
@@ -54,7 +62,6 @@ function App() {
   function handleDeletePlaceClick() {
     setIsDeletePlacePopupOpen(true);
   }
-
   function openInfoTooltipPopup() {
     setIsInfoTooltipOpen(true);
   }
@@ -69,16 +76,35 @@ function App() {
     setSelectedCard(null);
   }
 
+  const handleClickOverlay = (e) => {
+    if (e.currentTarget === e.target) {
+      closeAllPopups()
+    };
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyEscape);
+    } else {
+      document.removeEventListener("keydown", handleKeyEscape);
+    }
+  }, [isOpen]);
+
+  const handleKeyEscape = (e) => {
+    if (e.key === 'Escape') {
+        closeAllPopups();
+     };
+  };
+
   // авторизация пользователя
   function handleLoginUser({ password, email }) {
-    console.log(loggedIn)
     authApi
       .login(password, email)
       .then((data) => {
         if (data.token) {
-          tokenCheck()
-          handleLogin();
+          setLoggedIn(true);
           setUserEmail(email);
+          console.log(loggedIn)
           setInfoTooltipText("Вы успешно авторизовались!");
           setInfoTooltipImage(union);
           openInfoTooltipPopup();
@@ -108,17 +134,6 @@ function App() {
     }
   }, [loggedIn]);
 
-  // function getUserData() {
-  //   Promise.all([api.getProfileInfo(), api.getInitialCards()])
-  //     .then(([userData, cardsData]) => {
-  //       setCurrentUser(userData);
-  //       setCards(cardsData);
-  //     })
-  //     .catch((err) => {
-  //       console.log("Ошибка загрузки данных пользователя", err);
-  //     });
-  // }
-
   // проверка токена
   function tokenCheck() {
     const jwt = localStorage.getItem("jwt");
@@ -142,10 +157,6 @@ function App() {
     tokenCheck()
   }, []);
 
-  function handleLogin() {
-    setLoggedIn(true);
-  }
-
   // регистрация пользователя
   function handleRegisterUser({ password, email }) {
     authApi
@@ -166,8 +177,8 @@ function App() {
 
   // передача данных карточки
   function handleCardClick(card) {
-    console.log(card)
     setSelectedCard(card);
+    setIsImagePopupOpen(true)
   }
 
   // поставить убрать лайк
@@ -229,7 +240,7 @@ function App() {
     api
       .addNewCard({ name, link })
       .then((cardData) => {
-        setCards([cardData, ...cards]);
+        setCards([...cards, cardData]);
         closeAllPopups();
       })
       .catch((err) => {
@@ -254,7 +265,9 @@ function App() {
       });
   }
 
-  function signOut() {
+  // выход из профиля
+  const signOut = () => {
+    setLoggedIn(false)
     localStorage.removeItem("jwt");
     navigate("/sign-in");
   }
@@ -302,31 +315,41 @@ function App() {
           />
         </Routes>
         <Footer />
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <ImagePopup 
+          isOpen={isImagePopupOpen}
+          card={selectedCard}
+          onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
+        />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
           onUpdateUser={handleUpdateUser}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
           onAddCard={handleAddPlaceSubmit}
         />
         <DeletePlacePopup
           isOpen={isDeletePlacePopupOpen}
           onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
           onDeleteCard={handleDeletePlaceSubmit}
           cardData={cardData}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
           onUpdateAvatar={handleUpdateAvatar}
         />
         <InfoTooltip
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
+          onClickOverlay={handleClickOverlay}
           infoTooltipImage={infoTooltipImage}
           infoTooltipText={infoTooltipText}
         />

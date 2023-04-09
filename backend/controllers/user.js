@@ -1,11 +1,13 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
 const NotFoundError = require("../errors/not-found-err");
 const ValidationError = require("../errors/validation-error");
 const ConflictError = require("../errors/conflict-error");
 const User = require("../models/user");
 const { OK } = require("../utils/constants");
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 // получаем всех пользователей
 const getUsers = (req, res, next) => {
@@ -90,7 +92,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, "some-secret-key", {
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === "production" ? JWT_SECRET : "dev-secret", {
         expiresIn: "7d",
       });
       res.send({ token });

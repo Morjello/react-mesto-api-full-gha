@@ -33,21 +33,19 @@ router.post(
         email: Joi.string().required().email(),
         password: Joi.string().required(),
       })
-      .unknown(true),
   }),
   createUser
 );
-
-router.use("/users", auth, userRoutes);
-router.use("/cards", auth, cardsRoutes);
-
-router.use(errorLogger);
-router.use(errors());
+router.use(auth);
+router.use("/users", userRoutes);
+router.use("/cards", cardsRoutes);
 
 router.use((req, res, next) => {
   next(new NotFoundError("Страница не найдена"));
 });
 
+router.use(errorLogger);
+router.use(errors());
 router.use(errorHandler);
 
 module.exports = router;

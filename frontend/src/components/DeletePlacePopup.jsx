@@ -1,6 +1,6 @@
 import PopupWithForm from "./PopupWithForm";
 
-function DeletePlacePopup({ isOpen, onClose, onDeleteCard, cardData }) {
+function DeletePlacePopup({ isOpen, onClose, onDeleteCard, cardData, onClickOverlay }) {
   function handleSubmit(e) {
     e.preventDefault();
     onDeleteCard(cardData);
@@ -15,6 +15,7 @@ function DeletePlacePopup({ isOpen, onClose, onDeleteCard, cardData }) {
       title="Вы уверены?"
       name="delete"
       buttonText="Да"
+      onClickOverlay={onClickOverlay}
     />
   );
 }
